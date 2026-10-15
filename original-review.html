@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Match Masters — 25 Carousel Review</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #111218; color: #f7f7fa; }
+    header { position: sticky; top: 0; z-index: 5; padding: 18px 24px; background: rgba(17,18,24,.94); backdrop-filter: blur(16px); border-bottom: 1px solid #30313c; }
+    h1 { margin: 0 0 5px; font-size: 22px; }
+    .sub { color: #a8a9b4; font-size: 13px; }
+    nav { display: flex; gap: 8px; overflow-x: auto; padding: 14px 24px; border-bottom: 1px solid #292a33; }
+    button { flex: 0 0 auto; padding: 9px 13px; color: #d9dae2; background: #20212a; border: 1px solid #373844; border-radius: 999px; cursor: pointer; }
+    button.active { background: #ff4f82; border-color: #ff4f82; color: white; }
+    main { padding: 26px 24px 60px; }
+    .meta { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+    h2 { margin: 0; font-size: clamp(22px, 3vw, 36px); }
+    #count { color: #a8a9b4; white-space: nowrap; }
+    .slides { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 22px; align-items: start; }
+    figure { margin: 0; }
+    img { width: 100%; aspect-ratio: 4/5; display: block; object-fit: cover; border-radius: 10px; background: #24252e; box-shadow: 0 12px 34px rgba(0,0,0,.35); }
+    figcaption { padding-top: 8px; color: #858793; font-size: 12px; }
+    a { color: inherit; }
+    @media (min-width: 1400px) { .slides { grid-template-columns: repeat(5, 1fr); } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Match Masters — Carousel Review</h1>
+    <div class="sub">25 carousels · 110 slides · 1080×1350 exports</div>
+  </header>
+  <nav id="nav" aria-label="Carousel selector"></nav>
+  <main>
+    <div class="meta"><h2 id="title"></h2><div id="count"></div></div>
+    <section class="slides" id="slides"></section>
+  </main>
+  <script>
+    const titles = [
+      "Your first match, decoded","The board is shared. So is the danger.","3 habits that quietly give away points","A comeback starts before the score flips","Booster charge, in plain English","Should you take the flashy move?","Friend matches change everything","A calmer sticker-album routine","Tournament prep in five tiny checks","Me: one quick match","Why this is not ordinary match-3","Spot the trap before you tap","Your pre-move checklist","5 beginner myths to drop today","Lose smarter in 60 seconds","A better way to play ‘one more’","Build confidence one decision at a time","Things Match Masters players say","Your next move: a tiny decision tree","Good community energy wins","Events are fun. FOMO is optional.","Before any in-app purchase","Why friend matches hit harder","Which player are you today?","The 7-day smarter-play challenge"
+    ];
+    const counts = [5,4,5,3,4,4,4,4,6,2,5,5,5,6,4,3,5,5,5,4,3,5,2,6,6];
+    const nav = document.querySelector('#nav');
+    const slides = document.querySelector('#slides');
+    const title = document.querySelector('#title');
+    const count = document.querySelector('#count');
+    function show(index) {
+      [...nav.children].forEach((b,i) => b.classList.toggle('active', i === index));
+      title.textContent = `${String(index+1).padStart(2,'0')} — ${titles[index]}`;
+      count.textContent = `${counts[index]} slides`;
+      slides.innerHTML = '';
+      for (let s=1; s<=counts[index]; s++) {
+        const id = String(index+1).padStart(2,'0');
+        const sid = String(s).padStart(2,'0');
+        const src = `output/carousel-${id}/slide-${sid}.jpg`;
+        const fig = document.createElement('figure');
+        fig.innerHTML = `<a href="${src}" target="_blank"><img src="${src}" alt="Carousel ${id}, slide ${sid}" loading="eager"></a><figcaption>Slide ${sid}</figcaption>`;
+        slides.appendChild(fig);
+      }
+      history.replaceState(null, '', `#${String(index+1).padStart(2,'0')}`);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    titles.forEach((_,i) => {
+      const b = document.createElement('button');
+      b.textContent = String(i+1).padStart(2,'0');
+      b.onclick = () => show(i);
+      nav.appendChild(b);
+    });
+    const initial = Math.max(0, Math.min(24, Number(location.hash.slice(1) || 1)-1));
+    show(initial);
+  </script>
+</body>
+</html>
